@@ -475,42 +475,44 @@ function drawSlumpedPlayer(c: Canvas, x: number, y: number): void {
 }
 
 // A simple dark sports car silhouette on the road, with a hint of neon
-// underglow — the GTA vehicle in the foreground.
-function drawSportsCar(c: Canvas, x: number, y: number): void {
+// underglow — the GTA vehicle in the foreground. v3: drawn ~1.5x larger
+// so it reads as a sports car (not a blob) at the 480px judge size.
+function drawSportsCar(c: Canvas, x: number, y: number, s = 1): void {
   const BODY: Color = [22, 22, 38];
   // Neon underglow first, so the body sits on top of it.
-  c.ellipse(x + 135, y + 82, 135, 9, NEON, 0.4);
+  c.ellipse(x + 135 * s, y + 82 * s, 135 * s, 9 * s, NEON, 0.55);
   // Wheels.
-  c.circle(x + 55, y + 72, 19, BLACK);
-  c.circle(x + 55, y + 72, 8, [70, 70, 82]);
-  c.circle(x + 220, y + 72, 19, BLACK);
-  c.circle(x + 220, y + 72, 8, [70, 70, 82]);
+  c.circle(x + 55 * s, y + 72 * s, 19 * s, BLACK);
+  c.circle(x + 55 * s, y + 72 * s, 8 * s, [70, 70, 82]);
+  c.circle(x + 220 * s, y + 72 * s, 19 * s, BLACK);
+  c.circle(x + 220 * s, y + 72 * s, 8 * s, [70, 70, 82]);
   // Low wedge body with a cabin.
   c.polygon(
     [
-      [x, y + 72],
-      [x + 10, y + 38],
-      [x + 62, y + 30],
-      [x + 92, y + 4],
-      [x + 178, y + 4],
-      [x + 205, y + 30],
-      [x + 262, y + 38],
-      [x + 272, y + 72],
+      [x, y + 72 * s],
+      [x + 10 * s, y + 38 * s],
+      [x + 62 * s, y + 30 * s],
+      [x + 92 * s, y + 4 * s],
+      [x + 178 * s, y + 4 * s],
+      [x + 205 * s, y + 30 * s],
+      [x + 262 * s, y + 38 * s],
+      [x + 272 * s, y + 72 * s],
     ],
     BODY,
   );
   // Cabin glass.
   c.polygon(
     [
-      [x + 100, y + 12],
-      [x + 172, y + 12],
-      [x + 192, y + 30],
-      [x + 82, y + 30],
+      [x + 100 * s, y + 12 * s],
+      [x + 172 * s, y + 12 * s],
+      [x + 192 * s, y + 30 * s],
+      [x + 82 * s, y + 30 * s],
     ],
     [96, 150, 185],
   );
-  // Headlight slash.
-  c.line(x + 252, y + 44, x + 268, y + 46, 5, [255, 240, 160]);
+  // Headlight slash (front, right) + taillight slash (rear, left).
+  c.line(x + 252 * s, y + 44 * s, x + 268 * s, y + 46 * s, 5 * s, [255, 240, 160]);
+  c.line(x + 4 * s, y + 46 * s, x + 18 * s, y + 44 * s, 5 * s, [255, 60, 80]);
 }
 
 // ---------------------------------------------------------------------------
@@ -624,9 +626,10 @@ function drawVignette(c: Canvas): void {
 // ---------------------------------------------------------------------------
 // Variant "wasted": the iconic GTA death screen, Vice City edition.
 //
-// Top:    200 HOURS GRINDING GTA ONLINE
+// Top:    MAKE.FUN neon banner band (full width, dominant) +
+//          200 HOURS GRINDING GTA ONLINE
 // Centre: WASTED (over the make.fun ghost, the "dead" player)
-// Bottom: EARNED: $0.00
+// Bottom: EARNED: $0.00 — the $0.00 giant, high-contrast yellow
 // In-scene: a GTA VI / VICE CITY billboard and a neon MAKE.FUN sign.
 // ---------------------------------------------------------------------------
 function renderWasted(): Canvas {
@@ -658,11 +661,6 @@ function renderWasted(): Canvas {
   c.drawTextCentered('OUT NOW', panelX + 135, panelY + 70, 6, WHITE, { color: BLACK, width: 3 });
   c.drawTextCentered('VICE CITY', panelX + 135, panelY + 138, 3, [255, 179, 71], { color: BLACK, width: 2 });
 
-  // Neon MAKE.FUN sign, big and centred in the open sky (376px wide, 35%
-  // of the frame): the dominant element after WASTED, never cut by a
-  // building or crossed by a palm frond.
-  c.glowText('MAKE.FUN', 540, 128, 8, [255, 214, 246], NEON);
-
   // The ghost, centre stage and ALIVE: standing upright under the neon,
   // hands raised, smiling, no coin, no dizzy sparkles.
   c.ellipse(540, 852, 140, 18, BLACK, 0.35);
@@ -673,19 +671,39 @@ function renderWasted(): Canvas {
   c.drawTextCentered('+$79.99', 540, 505, 7, [57, 255, 110], { color: BLACK, width: 3 });
   c.drawTextCentered('MAKE.FUN PAYOUT', 540, 562, 3, WHITE, { color: BLACK, width: 2 });
 
+  // v3: MAKE.FUN banner band dominating the top third — a solid dark
+  // panel across the full width with neon borders, MAKE.FUN at scale 11
+  // (517px wide, 48% of the frame), the single most dominant element
+  // after WASTED. Drawn after the skyline so nothing crosses it.
+  c.rect(0, 0, c.w, 196, [12, 3, 26]);
+  c.rect(0, 0, c.w, 6, NEON);
+  c.rect(0, 190, c.w, 8, MAGENTA);
+  c.star(196, 98, 18, 7, WHITE);
+  c.star(884, 98, 18, 7, WHITE);
+  c.glowText('MAKE.FUN', 540, 52, 11, [255, 214, 246], NEON);
+
   // The grey player who got WASTED: slumped flat on the road, right side.
   drawSlumpedPlayer(c, 720, 828);
 
-  // Sports car silhouette in the left foreground, neon underglow.
-  drawSportsCar(c, 55, 872);
+  // v3: sports car ~1.5x larger in the left foreground, neon underglow
+  // stronger + taillight, so the GTA VI car reads at 480px.
+  drawSportsCar(c, 30, 830, 1.5);
 
   // The WASTED screen: dark band + huge grey letters.
-  c.rect(0, 318, c.w, 172, BLACK, 0.28);
-  c.drawTextCentered('WASTED', 540, 336, 20, [237, 237, 237], { color: BLACK, width: 5 });
+  c.rect(0, 292, c.w, 172, BLACK, 0.28);
+  c.drawTextCentered('WASTED', 540, 310, 20, [237, 237, 237], { color: BLACK, width: 5 });
 
-  // The joke, top and bottom. EARNED is now much bigger (scale 9).
-  c.drawTextCentered('200 HOURS GRINDING GTA ONLINE', 540, 62, 5, WHITE, { color: BLACK, width: 3 });
-  c.drawTextCentered('EARNED: $0.00', 540, 982, 9, WHITE, { color: BLACK, width: 4 });
+  // The joke, top and bottom. "200 HOURS..." moved below the banner band.
+  c.drawTextCentered('200 HOURS GRINDING GTA ONLINE', 540, 222, 4, WHITE, { color: BLACK, width: 3 });
+  // v3: the punchline number is now GIANT and high-contrast — bright
+  // yellow $0.00 at scale 14 with a thick black outline, next to a small
+  // EARNED: label. The value is still $0.00 (never $150 or anything else).
+  const zeroW = c.textWidth('$0.00', 14);
+  const earnedW = c.textWidth('EARNED:', 5);
+  const gap = 36;
+  const lineX = (c.w - (earnedW + gap + zeroW)) / 2;
+  c.drawText('EARNED:', lineX, 983, 5, WHITE, { color: BLACK, width: 3 });
+  c.drawText('$0.00', lineX + earnedW + gap, 952, 14, [255, 235, 59], { color: BLACK, width: 5 });
 
   drawVignette(c);
   return c;

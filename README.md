@@ -12,9 +12,28 @@ and reposts never count.
 > https://x.com/srjdnn16/status/2123654054995968022
 > (`POST.json` names it). The v1 post stays live, untouched.
 
+> v3 (20 Nov 2026, this commit): the meme below is v3 — NOT yet posted.
+> Caption unchanged from v2. `POST.json` still names the v2 post until the
+> coordinator posts v3 to X and updates it. Changes vs v2:
+>
+> 1. **MAKE.FUN banner dominates the top third:** a solid dark banner band
+>    across the full width with neon borders, MAKE.FUN at scale 11 (517 px
+>    wide, 48% of the frame) — no longer just a glow text in the sky.
+> 2. **$0.00 is now giant and high-contrast:** bright yellow at scale 14
+>    with a thick black outline, next to a small white EARNED: label. The
+>    value is still exactly $0.00 (never $150 or anything else).
+> 3. **Bigger, recognisable GTA VI car:** the foreground sports car is
+>    ~1.5× larger with stronger neon underglow, a headlight and a
+>    taillight, so it reads as a car at the 480 px judge size.
+> 4. Kept from v2: ghost alive and celebrating, grey slumped player,
+>    green +$79.99 HUD counter + MAKE.FUN PAYOUT label, GTA 6 OUT NOW /
+>    VICE CITY billboard, sunset Vice City, pixel font. No official
+>    Rockstar artwork, logo, or font anywhere — everything is drawn by
+>    `main.ts`.
+
 ## The meme
 
-![WASTED — 200 hours grinding GTA Online, earned $0.00. The make.fun ghost stands alive and celebrating under a big neon MAKE.FUN sign with a +$79.99 payout counter, while a grey player lies WASTED on the road in Vice City.](meme.png)
+![WASTED — 200 hours grinding GTA Online, earned $0.00. The make.fun ghost stands alive and celebrating under a full-width neon MAKE.FUN banner band with a +$79.99 payout counter, while a grey player lies WASTED on the road next to a big sports car in Vice City.](meme.png)
 
 **The joke:** the iconic GTA death screen, Vice City edition. You grind 200 hours
 in GTA Online, you get WASTED, and you earned $0.00 of real money — while the
@@ -22,15 +41,17 @@ make.fun ghost stands alive and celebrating under the neon MAKE.FUN sign, its
 HUD payout counter already reading +$79.99: the price of the GTA 6 copy it
 earned. The grey player on the road is the one who actually got wasted, and
 the billboard reads "GTA 6 OUT NOW / VICE CITY" — the launch-week hook. A
-sports car with neon underglow sits in the foreground.
+big sports car with neon underglow sits in the foreground, and the punchline
+number at the bottom is a giant yellow $0.00 you cannot miss.
 
 Why this one: a GTA fan gets it in under a second (the WASTED screen is the
 most recognisable image in the series), it is GTA 6 specific (Vice City, the
 GTA 6 OUT NOW billboard, the launch-week grind), and make.fun is the winner
-in the frame — the ghost is alive and paid, the neon MAKE.FUN sign is the
-second-biggest element after WASTED, and the +$79.99 payout counter sells it
-in one glance. Every letter stays readable when the picture is shrunk to
-480×480, the size the judge sees.
+in the frame — the ghost is alive and paid, the full-width neon MAKE.FUN
+banner band is the second-biggest element after WASTED, the giant yellow
+$0.00 is the third thing your eye lands on, and the +$79.99 payout counter
+sells it in one glance. Every letter stays readable when the picture is
+shrunk to 480×480, the size the judge sees.
 
 ## The post
 

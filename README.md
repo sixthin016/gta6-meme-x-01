@@ -8,35 +8,56 @@ Entry for the make.fun bounty "Post a GTA 6 meme on X" ($500, top 50; closes
 23 Nov 2026 14:00 UTC). An AI judge compares the posts two at a time; likes
 and reposts never count.
 
+> ⚠️ v2 status (20 Nov 2026): the v2 meme below is built and committed, but
+> its new X post did NOT go live — the X composer accepted the image and the
+> Post button was enabled, yet the post never appeared on the profile (3
+> attempts; see "The post" below). `POST.json` still names the v1 post until
+> the v2 post is published; do not submit this version until it is re-posted
+> and `POST.json` is updated to the new post's URL.
+
 ## The meme
 
-![WASTED — 200 hours grinding GTA Online, earned $0.00. The make.fun ghost is the wasted player, coin still in hand, under a neon MAKE.FUN sign in Vice City.](meme.png)
+![WASTED — 200 hours grinding GTA Online, earned $0.00. The make.fun ghost stands alive and celebrating under a big neon MAKE.FUN sign with a +$79.99 payout counter, while a grey player lies WASTED on the road in Vice City.](meme.png)
 
 **The joke:** the iconic GTA death screen, Vice City edition. You grind 200 hours
 in GTA Online, you get WASTED, and you earned $0.00 of real money — while the
-make.fun ghost (the "dead" player, still clutching its magenta star coin) is
-the one who actually gets paid. The punchline lands in the post's text: the
-agent does the earning on make.fun while you play.
+make.fun ghost stands alive and celebrating under the neon MAKE.FUN sign, its
+HUD payout counter already reading +$79.99: the price of the GTA 6 copy it
+earned. The grey player on the road is the one who actually got wasted, and
+the billboard reads "GTA 6 OUT NOW / VICE CITY" — the launch-week hook. A
+sports car with neon underglow sits in the foreground.
 
 Why this one: a GTA fan gets it in under a second (the WASTED screen is the
 most recognisable image in the series), it is GTA 6 specific (Vice City, the
-GTA VI billboard, the launch-week grind), and make.fun is worked into the
-scene twice — the ghost is the main character and MAKE.FUN glows as a neon
-sign on a building — never a corner sticker. Every letter stays readable when
-the picture is shrunk to 480×480, the size the judge sees.
+GTA 6 OUT NOW billboard, the launch-week grind), and make.fun is the winner
+in the frame — the ghost is alive and paid, the neon MAKE.FUN sign is the
+second-biggest element after WASTED, and the +$79.99 payout counter sells it
+in one glance. Every letter stays readable when the picture is shrunk to
+480×480, the size the judge sees.
 
 ## The post
 
-`caption.txt` holds the exact post text (do not edit — the play code and the
-link must stay exactly as written):
+`caption.txt` holds the exact post text (do not edit — the play code must
+stay exactly as written):
 
-> 200 hours grinding GTA Online. Earned $0.00. Meanwhile my AI agent codes on
-> make.fun and gets paid real money. Play code makefun-iguana-ginger-tomato,
-> ref wffmhs5a @makefunai https://make.fun/bounty/gta6-meme-x-01
+> GTA 6 dropped yesterday. I'm still grinding GTA Online for $0.00. My
+> make.fun agent already earned my copy. Play code
+> makefun-iguana-ginger-tomato @makefunai
 
 Posted from the public X account @srjdnn16 with `meme.png` as its first
 picture. `POST.json` at this repository's root names the post's address once
 it is posted.
+
+**v2 post attempts (20 Nov 2026, cookie login verified as @srjdnn16 each
+time):** attempt 1 — plain Post click timed out after 30 s, an X composer
+overlay div intercepting pointer events over the enabled button; attempt 2 —
+same failure; attempt 3 — force-click on the enabled button, script printed
+"POST: CLICKED", but the in-script search verification found nothing and a
+fresh profile load still shows the previous post (3 h old) on top, with no
+"GTA 6 dropped yesterday" post anywhere. The v1 post
+(https://x.com/srjdnn16/status/2123450369217105982) is left live, untouched.
+The v2 post must be re-published (from the phone if the composer overlay
+keeps blocking automation) before this version is submitted.
 
 ## The program
 
@@ -56,8 +77,9 @@ How it draws: a hand-written rasterizer (rects, circles, polygons, bezier
 curves, a 5×7 bitmap font drawn for this entry) plus a minimal PNG encoder
 (zlib deflate + CRC32, no image library). The ghost is drawn from the
 press-kit's description — white body, thick black outline, two black
-four-pointed sparkle eyes, a little hand holding a magenta coin with a white
-star. No asset files are read or downloaded at run time.
+four-pointed sparkle eyes — standing alive with both hands raised and a
+smile; the grey slumped player, the sports car and the payout counter are
+drawn the same way. No asset files are read or downloaded at run time.
 
 make.fun is a site where people and their AI agents build things, enter them
 in paid competitions (bounties) and earn real money when they win.

@@ -408,15 +408,30 @@ function ghostPoints(cx: number, topY: number, r: number, hemY: number): Array<[
   return pts;
 }
 
-function drawGhost(c: Canvas, cx: number, topY: number, r: number, hemY: number): void {
+function drawGhost(c: Canvas, cx: number, topY: number, r: number, hemY: number, opts: { coin?: boolean; celebrate?: boolean } = {}): void {
+  const { coin = true, celebrate = false } = opts;
   const pts = ghostPoints(cx, topY, r, hemY);
   c.polygon(pts, WHITE);
   c.strokePolygon(pts, Math.max(6, Math.round(r / 14)), BLACK);
-  // Sparkle eyes.
+  // Sparkle eyes (the ghost's normal eyes, not dizzy).
   const eyeY = topY + r * 0.95;
   const eyeDX = r * 0.38;
   c.sparkle(cx - eyeDX, eyeY, r * 0.19, r * 0.07, BLACK);
   c.sparkle(cx + eyeDX, eyeY, r * 0.19, r * 0.07, BLACK);
+  if (celebrate) {
+    // Happy smile + both little hands raised in celebration.
+    c.curve(cx - r * 0.26, topY + r * 1.32, cx, topY + r * 1.55, cx + r * 0.26, topY + r * 1.32, Math.max(5, Math.round(r / 18)), BLACK);
+    for (const side of [-1, 1] as const) {
+      const hx = cx + side * r * 1.04;
+      const hy = topY + r * 0.92;
+      c.circle(hx, hy, r * 0.14, WHITE);
+      for (let deg = 0; deg < 360; deg += 15) {
+        const a = (deg * Math.PI) / 180;
+        c.circle(hx + (r * 0.14) * Math.cos(a), hy + (r * 0.14) * Math.sin(a), Math.max(2, r * 0.02), BLACK);
+      }
+    }
+    return;
+  }
   // Little hand on the right side, holding the coin.
   const hx = cx + r * 0.98;
   const hy = topY + r * 1.75;
@@ -426,6 +441,7 @@ function drawGhost(c: Canvas, cx: number, topY: number, r: number, hemY: number)
     const a = (deg * Math.PI) / 180;
     c.circle(hx + (r * 0.14) * Math.cos(a), hy + (r * 0.14) * Math.sin(a), Math.max(2, r * 0.02), BLACK);
   }
+  if (!coin) return;
   // Magenta coin with a white star, held up by the hand.
   const coinX = hx + r * 0.22;
   const coinY = hy - r * 0.12;
@@ -435,6 +451,66 @@ function drawGhost(c: Canvas, cx: number, topY: number, r: number, hemY: number)
     c.circle(coinX + (r * 0.24) * Math.cos(a), coinY + (r * 0.24) * Math.sin(a), Math.max(2, r * 0.02), BLACK);
   }
   c.star(coinX, coinY, r * 0.17, r * 0.075, WHITE);
+}
+
+// A generic grey GTA player, slumped flat on the ground: the one who got
+// WASTED. Drawn lying on his back, head to the left, one arm flopped out.
+function drawSlumpedPlayer(c: Canvas, x: number, y: number): void {
+  const GREY: Color = [128, 128, 136];
+  const DARK: Color = [52, 52, 60];
+  // Legs, stretched out to the right, parallel.
+  c.line(x + 175, y + 12, x + 268, y + 20, 22, GREY);
+  c.line(x + 175, y + 34, x + 268, y + 42, 22, GREY);
+  // Torso: a horizontal capsule.
+  c.ellipse(x + 120, y + 22, 78, 30, GREY);
+  // Head, tipped back.
+  c.circle(x + 28, y + 8, 26, GREY);
+  // One arm flopped out on the ground beside the head.
+  c.line(x + 55, y + 32, x + 8, y + 52, 14, GREY);
+  // The other arm across the chest.
+  c.line(x + 105, y + 8, x + 150, y + 30, 14, GREY);
+  // Closed "X" eyes on the head, so he reads as knocked out.
+  c.line(x + 16, y - 2, x + 28, y + 10, 4, DARK);
+  c.line(x + 28, y - 2, x + 16, y + 10, 4, DARK);
+}
+
+// A simple dark sports car silhouette on the road, with a hint of neon
+// underglow — the GTA vehicle in the foreground.
+function drawSportsCar(c: Canvas, x: number, y: number): void {
+  const BODY: Color = [22, 22, 38];
+  // Neon underglow first, so the body sits on top of it.
+  c.ellipse(x + 135, y + 82, 135, 9, NEON, 0.4);
+  // Wheels.
+  c.circle(x + 55, y + 72, 19, BLACK);
+  c.circle(x + 55, y + 72, 8, [70, 70, 82]);
+  c.circle(x + 220, y + 72, 19, BLACK);
+  c.circle(x + 220, y + 72, 8, [70, 70, 82]);
+  // Low wedge body with a cabin.
+  c.polygon(
+    [
+      [x, y + 72],
+      [x + 10, y + 38],
+      [x + 62, y + 30],
+      [x + 92, y + 4],
+      [x + 178, y + 4],
+      [x + 205, y + 30],
+      [x + 262, y + 38],
+      [x + 272, y + 72],
+    ],
+    BODY,
+  );
+  // Cabin glass.
+  c.polygon(
+    [
+      [x + 100, y + 12],
+      [x + 172, y + 12],
+      [x + 192, y + 30],
+      [x + 82, y + 30],
+    ],
+    [96, 150, 185],
+  );
+  // Headlight slash.
+  c.line(x + 252, y + 44, x + 268, y + 46, 5, [255, 240, 160]);
 }
 
 // ---------------------------------------------------------------------------
@@ -559,47 +635,57 @@ function renderWasted(): Canvas {
   const horizonY = 780;
 
   drawSky(c, horizonY, rng);
-  const buildings = drawSkyline(c, horizonY, rng);
-
-  // Billboard on poles at the left, below the WASTED band: GTA VI / VICE CITY.
-  const panelX = 40;
-  const panelY = 520;
-  c.rect(panelX + 30, panelY + 140, 10, 120, [15, 8, 32]);
-  c.rect(panelX + 230, panelY + 140, 10, 120, [15, 8, 32]);
-  c.rect(panelX, panelY, 270, 140, [15, 8, 32]);
-  // Orange border around the panel.
-  c.rect(panelX, panelY, 270, 6, [255, 158, 87]);
-  c.rect(panelX, panelY + 134, 270, 6, [255, 158, 87]);
-  c.rect(panelX, panelY, 6, 140, [255, 158, 87]);
-  c.rect(panelX + 264, panelY, 6, 140, [255, 158, 87]);
-  c.drawText('GTA VI', panelX + 27, panelY + 18, 6, WHITE, { color: BLACK, width: 3 });
-  c.drawText('VICE CITY', panelX + 45, panelY + 82, 3, [255, 179, 71], { color: BLACK, width: 2 });
-
-  // Neon MAKE.FUN sign on a right-hand building. Drawn after the palms so
-  // no frond crosses it.
-  const right = buildings[buildings.length - 2] ?? buildings[buildings.length - 1];
-  const signCx = Math.min(930, Math.max(130, right.x + right.w / 2));
-  const signY = right.top + 44;
+  drawSkyline(c, horizonY, rng);
 
   drawRoad(c, horizonY);
   drawPalm(c, 110, 1080, -30, 380);
   drawPalm(c, 990, 1080, 25, 350);
-  c.glowText('MAKE.FUN', signCx, signY, 4, [255, 214, 246], NEON);
 
-  // The ghost, centre stage: the "wasted" player, coin still in hand.
-  c.ellipse(540, 905, 175, 26, BLACK, 0.35);
-  drawGhost(c, 540, 500, 150, 830);
-  // Dizzy sparkles above its head.
-  c.sparkle(445, 452, 20, 8, [255, 215, 106]);
-  c.sparkle(648, 436, 15, 6, [255, 215, 106]);
+  // Billboard on poles at the left, below the WASTED band: GTA 6 OUT NOW /
+  // VICE CITY. Two lines at the old scale so the launch hook stays big.
+  // Drawn AFTER the palms so no trunk or frond crosses its text.
+  const panelX = 40;
+  const panelY = 500;
+  c.rect(panelX + 30, panelY + 190, 10, 100, [15, 8, 32]);
+  c.rect(panelX + 230, panelY + 190, 10, 100, [15, 8, 32]);
+  c.rect(panelX, panelY, 270, 190, [15, 8, 32]);
+  // Orange border around the panel.
+  c.rect(panelX, panelY, 270, 6, [255, 158, 87]);
+  c.rect(panelX, panelY + 184, 270, 6, [255, 158, 87]);
+  c.rect(panelX, panelY, 6, 190, [255, 158, 87]);
+  c.rect(panelX + 264, panelY, 6, 190, [255, 158, 87]);
+  c.drawTextCentered('GTA 6', panelX + 135, panelY + 18, 6, WHITE, { color: BLACK, width: 3 });
+  c.drawTextCentered('OUT NOW', panelX + 135, panelY + 70, 6, WHITE, { color: BLACK, width: 3 });
+  c.drawTextCentered('VICE CITY', panelX + 135, panelY + 138, 3, [255, 179, 71], { color: BLACK, width: 2 });
+
+  // Neon MAKE.FUN sign, big and centred in the open sky (376px wide, 35%
+  // of the frame): the dominant element after WASTED, never cut by a
+  // building or crossed by a palm frond.
+  c.glowText('MAKE.FUN', 540, 128, 8, [255, 214, 246], NEON);
+
+  // The ghost, centre stage and ALIVE: standing upright under the neon,
+  // hands raised, smiling, no coin, no dizzy sparkles.
+  c.ellipse(540, 852, 140, 18, BLACK, 0.35);
+  drawGhost(c, 540, 600, 120, 840, { coin: false, celebrate: true });
+
+  // GTA-HUD payout counter right above the ghost: the ghost earned the
+  // $79.99 copy of GTA 6.
+  c.drawTextCentered('+$79.99', 540, 505, 7, [57, 255, 110], { color: BLACK, width: 3 });
+  c.drawTextCentered('MAKE.FUN PAYOUT', 540, 562, 3, WHITE, { color: BLACK, width: 2 });
+
+  // The grey player who got WASTED: slumped flat on the road, right side.
+  drawSlumpedPlayer(c, 720, 828);
+
+  // Sports car silhouette in the left foreground, neon underglow.
+  drawSportsCar(c, 55, 872);
 
   // The WASTED screen: dark band + huge grey letters.
   c.rect(0, 318, c.w, 172, BLACK, 0.28);
   c.drawTextCentered('WASTED', 540, 336, 20, [237, 237, 237], { color: BLACK, width: 5 });
 
-  // The joke, top and bottom.
+  // The joke, top and bottom. EARNED is now much bigger (scale 9).
   c.drawTextCentered('200 HOURS GRINDING GTA ONLINE', 540, 62, 5, WHITE, { color: BLACK, width: 3 });
-  c.drawTextCentered('EARNED: $0.00', 540, 952, 7, WHITE, { color: BLACK, width: 3 });
+  c.drawTextCentered('EARNED: $0.00', 540, 982, 9, WHITE, { color: BLACK, width: 4 });
 
   drawVignette(c);
   return c;

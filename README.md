@@ -8,12 +8,9 @@ Entry for the make.fun bounty "Post a GTA 6 meme on X" ($500, top 50; closes
 23 Nov 2026 14:00 UTC). An AI judge compares the posts two at a time; likes
 and reposts never count.
 
-> ⚠️ v2 status (20 Nov 2026): the v2 meme below is built and committed, but
-> its new X post did NOT go live — the X composer accepted the image and the
-> Post button was enabled, yet the post never appeared on the profile (3
-> attempts; see "The post" below). `POST.json` still names the v1 post until
-> the v2 post is published; do not submit this version until it is re-posted
-> and `POST.json` is updated to the new post's URL.
+> v2 (20 Nov 2026): the v2 meme below is live on X as
+> https://x.com/srjdnn16/status/2123654054995968022
+> (`POST.json` names it). The v1 post stays live, untouched.
 
 ## The meme
 
@@ -48,16 +45,16 @@ Posted from the public X account @srjdnn16 with `meme.png` as its first
 picture. `POST.json` at this repository's root names the post's address once
 it is posted.
 
-**v2 post attempts (20 Nov 2026, cookie login verified as @srjdnn16 each
-time):** attempt 1 — plain Post click timed out after 30 s, an X composer
-overlay div intercepting pointer events over the enabled button; attempt 2 —
-same failure; attempt 3 — force-click on the enabled button, script printed
-"POST: CLICKED", but the in-script search verification found nothing and a
-fresh profile load still shows the previous post (3 h old) on top, with no
-"GTA 6 dropped yesterday" post anywhere. The v1 post
+**v2 post (20 Nov 2026, cookie login verified as @srjdnn16 each
+time):** attempts 1–2 — plain Post click timed out after 30 s, an X composer
+overlay div intercepting pointer events over the enabled button; attempt 3 —
+force-click on the enabled button, script printed "POST: CLICKED", but no
+post appeared on the profile. Attempt 4 succeeded: textbox focused via JS
+(no mouse click), text typed, image attached, posted with Ctrl+Enter —
+verified live on the profile and via the public post record:
+https://x.com/srjdnn16/status/2123654054995968022 (caption + image +
+@makefunai mention confirmed). The v1 post
 (https://x.com/srjdnn16/status/2123450369217105982) is left live, untouched.
-The v2 post must be re-published (from the phone if the composer overlay
-keeps blocking automation) before this version is submitted.
 
 ## The program
 

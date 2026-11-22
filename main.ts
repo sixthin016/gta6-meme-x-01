@@ -1,18 +1,19 @@
-// main.ts — GTA 6 "WASTED" meme generator for make.fun bounty gta6-meme-x-01.
+// main.ts — GTA 6 jury duty summons meme generator for make.fun bounty gta6-meme-x-01.
 //
 // Node 22, standard library only. No network, no wall clock, no files
 // outside the repository. Fully deterministic: two runs write the same bytes.
 //
 // The grader runs:
 //   mkdir -p out && MAKEFUN_BOT_DIR=. MAKEFUN_OUTPUT_DIR=out node main.ts
-// This program (a) draws the meme and writes meme-<variant>.png into the
+// This program (a) draws the meme and writes meme.png into the
 // output directory, and (b) copies POST.json there, which is what the gate
 // reads. The post itself (its first picture on X + its text) is the entry:
 // the house reads it from X and hands it to the AI judge. Nothing this
 // program writes about the post is judged.
 //
-// Variants (local use, argv[2]): "wasted" (default) and "loading".
-// The grader runs with no arguments, so it always builds "wasted".
+// v4 (22 Nov 2026) — "jury": Leonida Circuit Court jury duty summons,
+// summoned 17 Sep 2013, trial date 26 May 2026, 13 years late, excused by
+// my AI agent on make.fun. Panel winner over v3 (mean 84.0, h2h 3-0).
 
 import { copyFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -623,135 +624,64 @@ function drawVignette(c: Canvas): void {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Variant "wasted": the iconic GTA death screen, Vice City edition.
-//
-// Top:    MAKE.FUN neon banner band (full width, dominant) +
-//          200 HOURS GRINDING GTA ONLINE
-// Centre: WASTED (over the make.fun ghost, the "dead" player)
-// Bottom: EARNED: $0.00 — the $0.00 giant, high-contrast yellow
-// In-scene: a GTA VI / VICE CITY billboard and a neon MAKE.FUN sign.
-// ---------------------------------------------------------------------------
-function renderWasted(): Canvas {
+// V4 jury — Leonida Circuit Court jury duty summons, 13 years late.
+function renderVariant(): Canvas {
   const c = new Canvas(1080, 1080);
-  const rng = mulberry32(20261120);
+  const rng = mulberry32(20261126);
   const horizonY = 780;
 
   drawSky(c, horizonY, rng);
   drawSkyline(c, horizonY, rng);
-
   drawRoad(c, horizonY);
   drawPalm(c, 110, 1080, -30, 380);
   drawPalm(c, 990, 1080, 25, 350);
 
-  // Billboard on poles at the left, below the WASTED band: GTA 6 OUT NOW /
-  // VICE CITY. Two lines at the old scale so the launch hook stays big.
-  // Drawn AFTER the palms so no trunk or frond crosses its text.
-  const panelX = 40;
-  const panelY = 500;
-  c.rect(panelX + 30, panelY + 190, 10, 100, [15, 8, 32]);
-  c.rect(panelX + 230, panelY + 190, 10, 100, [15, 8, 32]);
-  c.rect(panelX, panelY, 270, 190, [15, 8, 32]);
-  // Orange border around the panel.
-  c.rect(panelX, panelY, 270, 6, [255, 158, 87]);
-  c.rect(panelX, panelY + 184, 270, 6, [255, 158, 87]);
-  c.rect(panelX, panelY, 6, 190, [255, 158, 87]);
-  c.rect(panelX + 264, panelY, 6, 190, [255, 158, 87]);
-  c.drawTextCentered('GTA 6', panelX + 135, panelY + 18, 6, WHITE, { color: BLACK, width: 3 });
-  c.drawTextCentered('OUT NOW', panelX + 135, panelY + 70, 6, WHITE, { color: BLACK, width: 3 });
-  c.drawTextCentered('VICE CITY', panelX + 135, panelY + 138, 3, [255, 179, 71], { color: BLACK, width: 2 });
+  // Summons paper.
+  const px = 90;
+  const py = 60;
+  const pw = 900;
+  const ph = 960;
+  c.rect(px, py, pw, ph, [248, 244, 230]);
+  c.rect(px, py, pw, 8, [30, 20, 10]);
+  c.rect(px, py + ph - 8, pw, 8, [30, 20, 10]);
+  c.rect(px, py, 8, ph, [30, 20, 10]);
+  c.rect(px + pw - 8, py, 8, ph, [30, 20, 10]);
+  c.rect(px + 18, py + 18, pw - 36, ph - 36, [248, 244, 230]);
+  c.rect(px + 18, py + 18, pw - 36, 3, [30, 20, 10]);
+  c.rect(px + 18, py + ph - 21, pw - 36, 3, [30, 20, 10]);
+  c.rect(px + 18, py + 18, 3, ph - 36, [30, 20, 10]);
+  c.rect(px + pw - 21, py + 18, 3, ph - 36, [30, 20, 10]);
 
-  // The ghost, centre stage and ALIVE: standing upright under the neon,
-  // hands raised, smiling, no coin, no dizzy sparkles.
-  c.ellipse(540, 852, 140, 18, BLACK, 0.35);
-  drawGhost(c, 540, 600, 120, 840, { coin: false, celebrate: true });
+  const INK: Color = [30, 20, 10];
+  c.drawTextCentered('STATE OF LEONIDA', 540, 90, 5, INK);
+  c.drawTextCentered('CIRCUIT COURT', 540, 140, 4, INK);
 
-  // GTA-HUD payout counter right above the ghost: the ghost earned the
-  // $79.99 copy of GTA 6.
-  c.drawTextCentered('+$79.99', 540, 505, 7, [57, 255, 110], { color: BLACK, width: 3 });
-  c.drawTextCentered('MAKE.FUN PAYOUT', 540, 562, 3, WHITE, { color: BLACK, width: 2 });
+  c.drawTextCentered('JURY DUTY', 540, 190, 9, INK);
+  c.drawTextCentered('SUMMONS', 540, 265, 9, INK);
 
-  // v3: MAKE.FUN banner band dominating the top third — a solid dark
-  // panel across the full width with neon borders, MAKE.FUN at scale 11
-  // (517px wide, 48% of the frame), the single most dominant element
-  // after WASTED. Drawn after the skyline so nothing crosses it.
-  c.rect(0, 0, c.w, 196, [12, 3, 26]);
-  c.rect(0, 0, c.w, 6, NEON);
-  c.rect(0, 190, c.w, 8, MAGENTA);
-  c.star(196, 98, 18, 7, WHITE);
-  c.star(884, 98, 18, 7, WHITE);
-  c.glowText('MAKE.FUN', 540, 52, 11, [255, 214, 246], NEON);
+  c.rect(190, 348, 700, 4, INK);
 
-  // The grey player who got WASTED: slumped flat on the road, right side.
-  drawSlumpedPlayer(c, 720, 828);
+  c.drawTextCentered('SUMMONED: 17 SEP 2013', 540, 380, 4, INK);
+  c.drawTextCentered('TRIAL DATE: 26 MAY 2026', 540, 440, 4, INK);
+  c.drawTextCentered('13 YEARS LATE', 540, 510, 7, MAGENTA);
+  c.drawTextCentered('EXCUSED BY: MY AI AGENT', 540, 600, 4, INK);
+  c.drawTextCentered('ON MAKE.FUN', 540, 660, 6, MAGENTA);
 
-  // v3: sports car ~1.5x larger in the left foreground, neon underglow
-  // stronger + taillight, so the GTA VI car reads at 480px.
-  drawSportsCar(c, 30, 830, 1.5);
+  // Judge's gavel, bottom-left.
+  const WOOD: Color = [122, 72, 28];
+  const WOOD2: Color = [92, 52, 20];
+  c.polygon([[150, 770], [280, 740], [295, 790], [165, 820]], WOOD);
+  c.rect(150, 770, 130, 10, WOOD2);
+  c.line(215, 795, 310, 900, 14, WOOD2);
+  c.rect(270, 905, 110, 16, WOOD);
+  // Sound block under the gavel handle.
+  c.rect(255, 905, 140, 16, WOOD2);
 
-  // The WASTED screen: dark band + huge grey letters.
-  c.rect(0, 292, c.w, 172, BLACK, 0.28);
-  c.drawTextCentered('WASTED', 540, 310, 20, [237, 237, 237], { color: BLACK, width: 5 });
+  // The make.fun ghost as the bailiff, bottom-right, coin in hand.
+  c.ellipse(850, 1006, 90, 14, BLACK, 0.3);
+  drawGhost(c, 850, 760, 70, 990, { coin: true });
 
-  // The joke, top and bottom. "200 HOURS..." moved below the banner band.
-  c.drawTextCentered('200 HOURS GRINDING GTA ONLINE', 540, 222, 4, WHITE, { color: BLACK, width: 3 });
-  // v3: the punchline number is now GIANT and high-contrast — bright
-  // yellow $0.00 at scale 14 with a thick black outline, next to a small
-  // EARNED: label. The value is still $0.00 (never $150 or anything else).
-  const zeroW = c.textWidth('$0.00', 14);
-  const earnedW = c.textWidth('EARNED:', 5);
-  const gap = 36;
-  const lineX = (c.w - (earnedW + gap + zeroW)) / 2;
-  c.drawText('EARNED:', lineX, 983, 5, WHITE, { color: BLACK, width: 3 });
-  c.drawText('$0.00', lineX + earnedW + gap, 952, 14, [255, 235, 59], { color: BLACK, width: 5 });
-
-  drawVignette(c);
-  return c;
-}
-
-// ---------------------------------------------------------------------------
-// Variant "loading": the thirteen-year wait, as a progress bar.
-//
-// Top:    POV: YOU WAITED 13 YEARS FOR GTA VI
-// Centre: a loading bar stuck at 99% with the ghost sitting on it
-// Bottom: MY AGENT GOT PAID ON MAKE.FUN
-// ---------------------------------------------------------------------------
-function renderLoading(): Canvas {
-  const c = new Canvas(1080, 1080);
-  const rng = mulberry32(20261121);
-  const horizonY = 780;
-
-  drawSky(c, horizonY, rng);
-  const buildings = drawSkyline(c, horizonY, rng);
-
-  // Neon MAKE.FUN sign on a right-hand building. Drawn after the palms so
-  // no frond crosses it, and clear of the ESTIMATED TIME line below.
-  const right = buildings[buildings.length - 2] ?? buildings[buildings.length - 1];
-  const signCx = Math.min(930, Math.max(130, right.x + right.w / 2));
-  const signY = right.top + 44;
-
-  drawRoad(c, horizonY);
-  drawPalm(c, 110, 1080, -30, 380);
-  drawPalm(c, 990, 1080, 25, 350);
-  c.glowText('MAKE.FUN', signCx, signY, 4, [255, 214, 246], NEON);
-
-  // The loading bar, stuck at 99%.
-  const barX = 140;
-  const barY = 500;
-  const barW = 800;
-  const barH = 84;
-  c.rect(barX - 6, barY - 6, barW + 12, barH + 12, WHITE);
-  c.rect(barX, barY, barW, barH, [15, 8, 32]);
-  c.rect(barX, barY, Math.floor(barW * 0.99), barH, MAGENTA);
-  c.drawTextCentered('99%', 540, barY + 14, 6, WHITE, { color: BLACK, width: 3 });
-
-  // The ghost sits on the bar, still holding its coin.
-  c.ellipse(300, barY - 4, 110, 16, BLACK, 0.35);
-  drawGhost(c, 300, 250, 90, 500);
-
-  c.drawTextCentered('POV: YOU WAITED 13 YEARS FOR GTA VI', 540, 62, 4, WHITE, { color: BLACK, width: 3 });
-  c.drawTextCentered('ESTIMATED TIME: 13 YEARS', 540, 712, 5, [255, 179, 71], { color: BLACK, width: 3 });
-  c.drawTextCentered('MY AGENT GOT PAID ON MAKE.FUN', 540, 952, 5, WHITE, { color: BLACK, width: 3 });
+  c.drawText('BRING THIS NOTICE', 200, 972, 3, INK);
 
   drawVignette(c);
   return c;
@@ -763,12 +693,9 @@ function renderLoading(): Canvas {
 // ---------------------------------------------------------------------------
 const BOT_DIR = process.env.MAKEFUN_BOT_DIR ?? '/bot';
 const OUTPUT_DIR = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
-
-const variant = process.argv[2] === 'loading' ? 'loading' : 'wasted';
-const canvas = variant === 'loading' ? renderLoading() : renderWasted();
-
+const canvas = renderVariant();
 mkdirSync(OUTPUT_DIR, { recursive: true });
-writeFileSync(join(OUTPUT_DIR, `meme-${variant}.png`), encodePng(canvas));
+writeFileSync(join(OUTPUT_DIR, 'meme.png'), encodePng(canvas));
 try {
   copyFileSync(join(BOT_DIR, 'POST.json'), join(OUTPUT_DIR, 'POST.json'));
 } catch (err) {

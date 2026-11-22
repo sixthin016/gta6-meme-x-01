@@ -8,6 +8,22 @@ Entry for the make.fun bounty "Post a GTA 6 meme on X" ($500, top 50; closes
 23 Nov 2026 14:00 UTC). An AI judge compares the posts two at a time; likes
 and reposts never count.
 
+> v4 (22 Nov 2026, this commit): the meme below is v4 — jury summons —
+> live entry v4, NOT yet posted. Caption changed to the jury summons text.
+> `POST.json` still names the v3 post until the coordinator posts v4 to X
+> and updates it. Changes vs v3:
+>
+> 1. **A fake court document is the whole joke:** a Leonida Circuit Court
+>    jury duty summons fills the frame — SUMMONED 17 SEP 2013, TRIAL DATE
+>    26 MAY 2026 — the GTA V release date and the GTA VI release date,
+>    13 YEARS LATE in giant magenta.
+> 2. **The ghost is the bailiff:** the make.fun ghost stands bottom-right
+>    holding its magenta coin, next to a judge's gavel bottom-left.
+> 3. Kept from v3: Vice City sunset backdrop (skyline, palms, road), pixel
+>    font, hand-drawn rasterizer, deterministic render. No official
+>    Rockstar artwork, logo, or font anywhere — everything is drawn by
+>    `main.ts`.
+
 > v2 (20 Nov 2026): the v2 meme below is live on X as
 > https://x.com/srjdnn16/status/2123654054995968022
 > (`POST.json` names it). The v1 post stays live, untouched.
@@ -33,34 +49,30 @@ and reposts never count.
 
 ## The meme
 
-![WASTED — 200 hours grinding GTA Online, earned $0.00. The make.fun ghost stands alive and celebrating under a full-width neon MAKE.FUN banner band with a +$79.99 payout counter, while a grey player lies WASTED on the road next to a big sports car in Vice City.](meme.png)
+![Leonida Circuit Court jury duty summons: SUMMONED 17 SEP 2013, TRIAL DATE 26 MAY 2026, 13 YEARS LATE in magenta, EXCUSED BY MY AI AGENT ON MAKE.FUN. A judge's gavel sits bottom-left and the white make.fun ghost stands bottom-right as the bailiff, holding a magenta coin with a star, over a Vice City sunset.](meme.png)
 
-**The joke:** the iconic GTA death screen, Vice City edition. You grind 200 hours
-in GTA Online, you get WASTED, and you earned $0.00 of real money — while the
-make.fun ghost stands alive and celebrating under the neon MAKE.FUN sign, its
-HUD payout counter already reading +$79.99: the price of the GTA 6 copy it
-earned. The grey player on the road is the one who actually got wasted, and
-the billboard reads "GTA 6 OUT NOW / VICE CITY" — the launch-week hook. A
-big sports car with neon underglow sits in the foreground, and the punchline
-number at the bottom is a giant yellow $0.00 you cannot miss.
+**The joke:** a jury duty summons from the State of Leonida, Circuit Court —
+summoned 17 Sep 2013, trial date 26 May 2026. Leonida's court system is as
+slow as the wait for GTA VI: 13 years late. And what gets you excused from
+jury duty isn't a lawyer, it's your AI agent on make.fun — which already
+earned your copy of the game. The judge's gavel and the ghost bailiff
+holding its magenta coin sell the courtroom.
 
-Why this one: a GTA fan gets it in under a second (the WASTED screen is the
-most recognisable image in the series), it is GTA 6 specific (Vice City, the
-GTA 6 OUT NOW billboard, the launch-week grind), and make.fun is the winner
-in the frame — the ghost is alive and paid, the full-width neon MAKE.FUN
-banner band is the second-biggest element after WASTED, the giant yellow
-$0.00 is the third thing your eye lands on, and the +$79.99 payout counter
-sells it in one glance. Every letter stays readable when the picture is
-shrunk to 480×480, the size the judge sees.
+Why this one: a GTA fan gets it in under a second (17 Sep 2013 is the GTA V
+release date, 26 May 2026 is the GTA VI release date), the summons format
+reads as an official document at a glance, and make.fun is the winner in
+the frame — "EXCUSED BY: MY AI AGENT / ON MAKE.FUN" in giant magenta, the
+ghost bailiff holding its coin. Every letter stays readable when the picture
+is shrunk to 480×480, the size the judge sees.
 
 ## The post
 
 `caption.txt` holds the exact post text (do not edit — the play code must
 stay exactly as written):
 
-> GTA 6 dropped yesterday. I'm still grinding GTA Online for $0.00. My
-> make.fun agent already earned my copy. Play code
-> makefun-iguana-ginger-tomato @makefunai
+> Leonida jury duty summons: summoned 17 Sep 2013, trial date 26 May 2026.
+> 13 years late — excused by my AI agent on make.fun, which already earned
+> my copy. Play code makefun-iguana-ginger-tomato @makefunai
 
 Posted from the public X account @srjdnn16 with `meme.png` as its first
 picture. `POST.json` at this repository's root names the post's address once
@@ -82,22 +94,21 @@ https://x.com/srjdnn16/status/2123654054995968022 (caption + image +
 `main.ts` (Node 22, standard library only — no installs, no network) draws
 the meme from scratch and writes it into the output directory, then copies
 `POST.json` there, which is what the gate reads. It is fully deterministic:
-two runs write the same bytes. A second variant, the 13-year loading bar,
-is built with `node main.ts loading`.
+two runs write the same bytes. v4 draws a single variant, the jury summons.
 
 ```sh
 mkdir -p out && MAKEFUN_BOT_DIR=. MAKEFUN_OUTPUT_DIR=out node main.ts
-# out/meme-wasted.png  — the meme (identical every run, sha256-verified)
-# out/POST.json        — byte for byte this repository's POST.json
+# out/meme.png    — the meme (identical every run, sha256-verified)
+# out/POST.json   — byte for byte this repository's POST.json
 ```
 
 How it draws: a hand-written rasterizer (rects, circles, polygons, bezier
 curves, a 5×7 bitmap font drawn for this entry) plus a minimal PNG encoder
 (zlib deflate + CRC32, no image library). The ghost is drawn from the
 press-kit's description — white body, thick black outline, two black
-four-pointed sparkle eyes — standing alive with both hands raised and a
-smile; the grey slumped player, the sports car and the payout counter are
-drawn the same way. No asset files are read or downloaded at run time.
+four-pointed sparkle eyes — standing as the court bailiff holding its
+magenta coin with a white star; the judge's gavel, the summons paper and
+the Vice City backdrop are drawn the same way. No asset files are read or downloaded at run time.
 
 make.fun is a site where people and their AI agents build things, enter them
 in paid competitions (bounties) and earn real money when they win.
